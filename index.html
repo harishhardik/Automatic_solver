@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Coding Practice Toolkit</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, sans-serif;
+      background: #f5f7fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+      border-radius: 12px;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .nav-tabs {
+      display: flex;
+      background: white;
+      border-radius: 12px;
+      padding: 8px;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow-x: auto;
+    }
+
+    .nav-tab {
+      flex: 1;
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab.active {
+      background: #667eea;
+      color: white;
+    }
+
+    .nav-tab:hover:not(.active) {
+      background: #f8f9fa;
+    }
+
+    .tab-content {
+      display: none;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: #555;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    .btn:hover {
+      background: #5a6fd8;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+
+    .btn-success {
+      background: #28a745;
+    }
+
+    .btn-success:hover {
+      background: #218838;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #667eea;
+    }
+
+    .card h3 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .problem-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .problem-item {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #e1e5e9;
+      transition: all 0.3s ease;
+    }
+
+    .problem-item:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .problem-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .problem-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .problem-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      background: #e9ecef;
+      color: #495057;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    .algorithm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .algorithm-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #e1e5e9;
+    }
+
+    .algorithm-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+
+    .algorithm-meta {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .code-block {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      padding: 1rem;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      background: #e9ecef;
+      border-radius: 10px;
+      height: 20px;
+      overflow: hidden;
+      margin: 0.5rem 0;
+    }
+
+    .progress-fill {
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      height: 100%;
+      transition: width 0.3s ease;
+    }
+
+    .test-results {
+      margin-top: 1rem;
+    }
+
+    .test-case {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #28a745;
+    }
+
+    .test-case.failed {
+      border-left-color: #dc3545;
+    }
+
+    .test-input {
+      background: #e9ecef;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-family: monospace;
+      margin: 0.5rem 0;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 1rem 0;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .alert-info {
+      background: #d1ecf1;
+      color: #0c5460;
+      border: 1px solid #bee5eb;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 10px;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+      
+      .nav-tabs {
+        flex-direction: column;
+      }
+      
+      .nav-tab {
+        margin-bottom: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🚀 Coding Practice Toolkit</h1>
+      <p>Master algorithms with problem workspace, test harness, algorithm cribsheet, and practice tracker</p>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="problems">📝 Problems</button>
+      <button class="nav-tab" data-tab="algorithms">🧠 Algorithms</button>
+      <button class="nav-tab" data-tab="practice">📊 Practice</button>
+      <button class="nav-tab" data-tab="tracking">📈 Tracking</button>
+    </div>
+
+    <!-- Problems Tab -->
+    <div id="problems" class="tab-content active">
+      <div class="card">
+        <h3>Create New Problem</h3>
+        <form id="problem-form">
+          <div class="form-group">
+            <label for="problem-name">Problem Name</label>
+            <input type="text" id="problem-name" required>
+          </div>
+          <div class="form-group">
+            <label for="problem-difficulty">Difficulty</label>
+            <select id="problem-difficulty">
+              <option value="Easy">Easy</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="Hard">Hard</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="problem-language">Language</label>
+            <select id="problem-language">
+              <option value="javascript" selected>JavaScript</option>
+              <option value="python">Python</option>
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="problem-tags">Tags (comma-separated)</label>
+            <input type="text" id="problem-tags" placeholder="array, sorting, two-pointers">
+          </div>
+          <div class="form-group">
+            <label for="problem-description">Description</label>
+            <textarea id="problem-description" placeholder="Describe the problem..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="sample-input">Sample Input</label>
+            <textarea id="sample-input" placeholder="Enter sample input..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="sample-output">Sample Output</label>
+            <textarea id="sample-output" placeholder="Enter expected output..."></textarea>
+          </div>
+          <button type="submit" class="btn">Create Problem</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h3>Your Problems</h3>
+        <div id="problems-list" class="problem-list">
+          <div class="loading">Loading problems...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Algorithms Tab -->
+    <div id="algorithms" class="tab-content">
+      <div class="card">
+        <h3>Search Algorithms</h3>
+        <div class="form-group">
+          <input type="text" id="algorithm-search" placeholder="Search algorithms...">
+        </div>
+        <div style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+          <select id="algorithm-category">
+            <option value="">All Categories</option>
+          </select>
+          <select id="algorithm-difficulty">
+            <option value="">All Difficulties</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="algorithms-list" class="algorithm-grid">
+        <div class="loading">Loading algorithms...</div>
+      </div>
+    </div>
+
+    <!-- Practice Tab -->
+    <div id="practice" class="tab-content">
+      <div class="card">
+        <h3>Test Your Solution</h3>
+        <div class="form-group">
+          <label for="test-problem-id">Problem ID</label>
+          <input type="text" id="test-problem-id" placeholder="Enter problem ID...">
+        </div>
+        <div class="form-group">
+          <label for="test-language">Language</label>
+          <select id="test-language">
+            <option value="javascript" selected>JavaScript</option>
+            <option value="python">Python</option>
+            <option value="java">Java</option>
+            <option value="cpp">C++</option>
+          </select>
+        </div>
+        <button class="btn" onclick="runTests()">Run Tests</button>
+        <button class="btn btn-secondary" onclick="addTestCase()">Add Test Case</button>
+      </div>
+
+      <div id="test-results" class="test-results"></div>
+    </div>
+
+    <!-- Tracking Tab -->
+    <div id="tracking" class="tab-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="total-problems">0</div>
+          <div class="stat-label">Total Problems</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="solved-problems">0</div>
+          <div class="stat-label">Solved</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="current-streak">0</div>
+          <div class="stat-label">Current Streak</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="avg-time">0</div>
+          <div class="stat-label">Avg Time (min)</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Progress Goals</h3>
+        <div id="progress-goals"></div>
+      </div>
+
+      <div class="card">
+        <h3>Recent Sessions</h3>
+        <div id="recent-sessions"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
+
+
+
