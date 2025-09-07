@@ -1,0 +1,35 @@
+{
+  "name": "coding-practice-toolkit",
+  "version": "1.0.0",
+  "description": "A comprehensive coding practice toolkit with problem workspace, algorithm cribsheet, test harness, and practice tracker",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js",
+    "simulate": "node simulator/sim.js",
+    "build": "echo 'No build step required'",
+    "vercel-build": "echo 'Vercel build completed'"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5",
+    "socket.io-client": "^4.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "coding",
+    "algorithms",
+    "practice",
+    "leetcode",
+    "programming",
+    "education"
+  ],
+  "author": "Coding Practice Toolkit",
+  "license": "MIT"
+}
